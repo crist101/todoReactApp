@@ -4,6 +4,7 @@ const  setCookie = (cname,cvalue)=>{
     d.setTime(d.getTime() + (365 * 24 * 60 * 60 * 1000));
     let expires = "expires="+d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
+    console.log("Cookie Set")
     return true
 }
 export default setCookie

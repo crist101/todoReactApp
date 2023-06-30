@@ -27,13 +27,13 @@ function AddNewConcern() {
   const [newConcern, setNewConcern] = useState("")
   const [subject, setSubject] = useState("")
   const [deadline, setdeadline] = useState("")
-  const [userList, setUserList] = useState([])
   const [label, setLabel] = useState({
     assignedLabel:false,
     concernLabel: false,
     subjectLabel:false,
     deadlineLabel:false,
   })
+  const [userList, setUserList] = useState([])
   const checkDetails = ()=>{
     var result = false;
     [assigned,newConcern,deadline,subject].forEach((item)=>item===""&&result===false?result = true:"");
@@ -47,6 +47,7 @@ function AddNewConcern() {
   const submitHandle = (e)=>{
     const checkText = checkDetails();
     if(!checkText){
+      console.log(assigned)
         axios.post(baseURL+"/add",{setAssigned:assigned,setConcern:newConcern,setSubject:subject,setDeadline:deadline}).then((response)=>{
             console.log(response.data);
         }).catch((error)=>
@@ -54,6 +55,17 @@ function AddNewConcern() {
         );
     }
   }
+
+  const GetUserList = () =>{
+    axios.get(baseURL+"/getUser").then((response)=>{
+        setUserList(response.data);
+        console.log(userList)
+    }).catch((error)=>{
+        console.log(error);
+    })
+}
+  
+
   return (
     <div>
       <Button
@@ -77,13 +89,25 @@ function AddNewConcern() {
                     >Please assign a person who need to check this concern.</Label>
                     :""
                     }
-                    <select required onChange={(e)=>{setAssigned(e.target.value)}}>
+                    <select required onChange={(e)=>{setAssigned(e.target.value)}} onClick={(e)=>{GetUserList()}}>
                         <option value="" select></option>
-                        <option value="1">Juan</option>
-                        <option value="2">Crist</option>
-                        <option value="3">Mary</option>
+                        {userList.map((item,i)=>(
+                          <option value={item["token"]}>{item["name"]}</option>
+                        ))}
                     </select>
                 </p>
+                <h4>PCC Number</h4>
+                {label.subjectLabel?
+                <Label basic color='red' pointing='below'>Please place the PCC Number here</Label>
+                :""}
+                <input type="text"  onChange={(e)=>{setSubject(e.target.value)}} required placeholder='Enter the title' />
+                
+                <h4>Doctrack Number</h4>
+                {label.subjectLabel?
+                <Label basic color='red' pointing='below'>Please place the Doctrack Number here</Label>
+                :""}
+                <input type="text"  onChange={(e)=>{setSubject(e.target.value)}} required placeholder='Enter Doctrack Number' />
+                
                 <h4>Subject</h4>
                 {label.subjectLabel?
                 <Label basic color='red' pointing='below'>Please place the concern here</Label>

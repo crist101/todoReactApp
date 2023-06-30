@@ -19,7 +19,7 @@ const checkCookie =()=> {
     let user = getCookie("sessionID");
     if (user != "") {
         axios.get(baseURL+"/"+user).then((response)=>{
-          if(!response.data[0]){
+          if(!response.data.result){
             deleteAllCookies();
           }
         }).catch((error)=>{
@@ -28,6 +28,7 @@ const checkCookie =()=> {
         return true
     } else {
       if (user != "" && user != null) {
+        console.log(false)
         return false
       }
     }
